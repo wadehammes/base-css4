@@ -16,7 +16,7 @@ $ npm install
 
 Run Gulp:
 ```
-$ gulp
+$ npm start
 ```
 
 Your project should compile successfully.
