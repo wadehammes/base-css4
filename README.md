@@ -1,11 +1,7 @@
 Base CSS4 (v1)
 ===
 
-#####PRIOR TO FIRST USE (if you don't have these below installed already):
-<a href="http://nodejs.org/download/">http://nodejs.org/download/</a>
-
-#####AFTER ABOVE DEPENDENCIES ARE INSTALLED:
-
+#####USE (install <a href="http://nodejs.org/download/">NPM</a>):
 Clone this repo into your code directory and copy it to your project:
 ```
 $ cd your/development/directory/
