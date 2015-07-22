@@ -23,11 +23,15 @@ Your project should compile successfully.
 
 ##### In order to optimize your SVG
 ```
+$ cd assets
+$ mkdir svg
 $ gulp svg
 ```
 
 ##### In order to optimize your images
 ```
+$ cd assets
+$ mkdir img
 $ gulp images
 ```
 
