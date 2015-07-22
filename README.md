@@ -2,11 +2,12 @@ Base CSS4 (v1)
 ===
 
 #####USE (install <a href="http://nodejs.org/download/">NPM</a>):
-Clone this repo into your code directory and copy it to your project:
+Clone this repo into your code directory and remove the .git file:
 ```
 $ cd your/development/directory/
 $ git clone git@github.com:wadehammes/base-css4.git your-project-name
-$ git rm -rf .git
+$ rm -rf .git
+$ rm .gitignore
 $ npm install
 ```
 
@@ -46,3 +47,5 @@ Using this to build
 All theme dev is done in the assets/ directory. You will need to create the SVG and IMG directories (svg/ and img/ respectively). For more information on BASSCSS, see http://basscss.com, and for more info on using CSS4 now, visit the CSS Next website at http://cssnext.io
 
 To include new CSS files outside of the BASSCSS defaults, comment out modules, or add optional modules, please see <code>assets/css/base.css</code>.
+
+You can also use .php files if you need, just change index to .php and then create your files that way (use <code>include</code> where you can to keep things DRY).

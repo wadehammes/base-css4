@@ -64,10 +64,8 @@
 */
 
 
-/* Example custom file import */
-/*
-@import './color/borders';
-*/
+/* Custom file import */
+/*@import './global/colors';*/
 
 
 /* Default custom properties */
@@ -153,5 +151,9 @@
   --link-color: var(--blue);
   --button-background-color: var(--blue);
   --pre-background-color: var(--silver);
+
+  /* Custom Variables Overrides */
+  --body-color: var(--gray);
+  --body-background-color: var(--darken-1);
 }
 
