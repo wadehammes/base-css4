@@ -11,9 +11,6 @@ $ rm .gitignore
 $ npm install
 ```
 
-<b>NOTE: if you get an error about node-sass not being installed, take a look at this Stack Overflow (and the answer):</b>
-<a href="http://stackoverflow.com/questions/29461831/libsass-bindings-not-found-when-using-node-sass-in-nodejs">http://stackoverflow.com/questions/29461831/libsass-bindings-not-found-when-using-node-sass-in-nodejs</a>
-
 Run Gulp:
 ```
 $ npm start
