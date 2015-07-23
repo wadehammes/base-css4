@@ -17,6 +17,7 @@ webserver   = require('gulp-webserver'),
 jshint      = require('gulp-jshint'),
 gzip        = require('gulp-gzip'),
 cssnext     = require('gulp-cssnext'),
+htmlmin     = require('gulp-htmlmin'),
 opn         = require('opn');
 
 /*=====================================
@@ -28,8 +29,8 @@ var themeBase = './www';
 /*=========================================
 =            Destination Paths            =
 =========================================*/
-var stylePathSrc  = devBase + '/css/base.css';
-var stylePathDest = themeBase + '/css/';
+var stylePathSrc     = devBase + '/css/base.css';
+var stylePathDest    = themeBase + '/css/';
 
 var scriptsPathSrc   = [devBase + '/js/_lib/**/*.js', devBase + '/js/_src/**/*.js', devBase + '/js/app.js'];
 var scriptsPathWatch = devBase + '/js/**/*.js';
@@ -43,6 +44,7 @@ var imgDest          = themeBase + '/img';
 
 var phpPath          = themeBase + '/**/*.php';
 var htmlPath         = themeBase + '/**/*.html';
+var htmlViewsPath    = themeBase + '/views/*.html';
 
 /*===============================
 =            Options            =
@@ -101,6 +103,17 @@ gulp.task('scripts', function() {
   .pipe(gulp.dest(scriptsPathDest))
   .pipe(livereload({start: true}))
   .pipe(notify({ message: 'Scripts task complete' }));
+});
+
+// Minify HTML
+gulp.task('minify', function() {
+  return gulp.src(htmlViewsPath)
+    .pipe(plumber())
+    .pipe(htmlmin({
+      collapseWhitespace: true,
+      removeComments: true
+    }))
+    .pipe(gulp.dest(themeBase))
 });
 
 // Launch Server
@@ -177,6 +190,6 @@ gulp.task('watch', function() {
 /*==========================================
 =            Run the Gulp Tasks            =
 ==========================================*/
-gulp.task('default', ['copy', 'stylesheets', 'scripts', 'webserver', 'openbrowser', 'watch']);
+gulp.task('default', ['minify', 'copy', 'stylesheets', 'scripts', 'webserver', 'openbrowser', 'watch']);
 gulp.task('images', ['img-opt']);
 gulp.task('svg', ['svg-opt']);
