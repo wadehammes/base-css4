@@ -30,6 +30,7 @@ var themeBase = './www';
 =            Destination Paths            =
 =========================================*/
 var stylePathSrc     = devBase + '/css/base.css';
+var stylePathWatch   = devBase + '/css/**/*';
 var stylePathDest    = themeBase + '/css/';
 
 var scriptsPathSrc   = [devBase + '/js/_lib/**/*.js', devBase + '/js/_src/**/*.js', devBase + '/js/app.js'];
@@ -69,7 +70,7 @@ var gzip_options = {
 // Copy bower files into our assets
 gulp.task('copy', function() {
   gulp.src([
-    /* add bower src files here if you include a bower.json */
+    /* add files from node_modules here if needed for JS */
   ])
   .pipe(gulp.dest(devBase + '/js/_lib/'));
 });
@@ -84,7 +85,7 @@ gulp.task("stylesheets", function() {
     .pipe(gulp.dest(stylePathDest))
     .pipe(gzip(gzip_options))
     .pipe(gulp.dest(stylePathDest))
-    .pipe(livereload({start: true}))
+    .pipe(livereload())
     .pipe(notify({ message: 'Styles task complete' }));
 });
 
@@ -101,7 +102,7 @@ gulp.task('scripts', function() {
   .pipe(concat('app.js', {newLine: ';'}))
   .pipe(uglify())
   .pipe(gulp.dest(scriptsPathDest))
-  .pipe(livereload({start: true}))
+  .pipe(livereload())
   .pipe(notify({ message: 'Scripts task complete' }));
 });
 
@@ -171,17 +172,12 @@ gulp.task('svg-opt', function () {
 gulp.task('watch', function() {
   livereload.listen();
 
-  gulp.watch(phpPath).on('change', function(file) {
-    livereload.changed(file.path);
-    util.log(util.colors.blue('PHP file changed:' + ' (' + file.path + ')'));
-  });
-
-  gulp.watch(htmlPath).on('change', function(file) {
+  gulp.watch(htmlViewsPath, ['minify']).on('change', function(file) {
     livereload.changed(file.path);
     util.log(util.colors.red('HTML file changed:' + ' (' + file.path + ')'));
   });
 
-  gulp.watch(stylePathSrc, ['stylesheets']);
+  gulp.watch(stylePathWatch, ['stylesheets']);
   gulp.watch(scriptsPathWatch, ['scripts']);
   gulp.watch(svgPathWatch, ['svg-opt']);
   gulp.watch(imgPathWatch, ['img-opt']);
@@ -190,6 +186,6 @@ gulp.task('watch', function() {
 /*==========================================
 =            Run the Gulp Tasks            =
 ==========================================*/
-gulp.task('default', ['minify', 'copy', 'stylesheets', 'scripts', 'webserver', 'openbrowser', 'watch']);
+gulp.task('default', ['copy', 'stylesheets', 'scripts', 'minify', 'webserver', 'openbrowser', 'watch']);
 gulp.task('images', ['img-opt']);
 gulp.task('svg', ['svg-opt']);
