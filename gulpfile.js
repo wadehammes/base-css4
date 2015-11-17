@@ -33,6 +33,10 @@ var stylePathSrc     = devBase + '/css/base.css';
 var stylePathWatch   = devBase + '/css/**/*';
 var stylePathDest    = themeBase + '/css/';
 
+var stylePathSrc  = devBase + '/css/base.css';
+var stylePathDev  = devBase + '/css/**/*.css';
+var stylePathDest = themeBase + '/css/';
+
 var scriptsPathSrc   = [devBase + '/js/_lib/**/*.js', devBase + '/js/_src/**/*.js', devBase + '/js/app.js'];
 var scriptsPathWatch = devBase + '/js/**/*.js';
 var scriptsPathDest  = themeBase + '/js/';
@@ -77,7 +81,7 @@ gulp.task('copy', function() {
 
 // Compile, prefix, minify and move our SCSS files
 gulp.task("stylesheets", function() {
-  gulp.src(stylePathSrc)
+  gulp.src(stylePathDev)
     .pipe(plumber())
     .pipe(cssnext({
         compress: true
