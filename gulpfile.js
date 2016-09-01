@@ -1,72 +1,52 @@
 /*=====================================
 =            Gulp Packages            =
 =====================================*/
+require('es6-promise').polyfill();
+
 var gulp    = require('gulp'),
+fs          = require('fs'),
 concat      = require('gulp-concat'),
 uglify      = require('gulp-uglify'),
 svgmin      = require('gulp-svgmin'),
 imagemin    = require('gulp-imagemin'),
-livereload  = require('gulp-livereload'),
 notify      = require("gulp-notify"),
-util        = require('gulp-util'),
+utility     = require('gulp-util'),
 watch       = require('gulp-watch'),
 streamqueue = require('streamqueue'),
 plumber     = require('gulp-plumber'),
 shell       = require('gulp-shell'),
-webserver   = require('gulp-webserver'),
-jshint      = require('gulp-jshint'),
-gzip        = require('gulp-gzip'),
-cssnext     = require('gulp-cssnext'),
-htmlmin     = require('gulp-htmlmin'),
-opn         = require('opn');
+sourcemaps  = require('gulp-sourcemaps'),
+postcss     = require('gulp-postcss'),
+browserSync = require('browser-sync').create();
 
-/*=====================================
-=            Default Paths            =
-=====================================*/
-var devBase   = './assets';
-var themeBase = './www';
+// Read our Settings Configuration
+var settings = JSON.parse(fs.readFileSync('./settings.json'));
 
-/*=========================================
-=            Destination Paths            =
-=========================================*/
-var stylePathSrc     = devBase + '/css/base.css';
-var stylePathWatch   = devBase + '/css/**/*';
+/*==================================
+=            Base Paths            =
+==================================*/
+var themeBase        = './www';
+
+// Style Path
+var stylePathSrc     = themeBase + 'css/base.css';
+var stylePathWatch   = themeBase + 'css/**/*.css';
 var stylePathDest    = themeBase + '/css/';
 
-var stylePathSrc  = devBase + '/css/base.css';
-var stylePathDev  = devBase + '/css/**/*.css';
-var stylePathDest = themeBase + '/css/';
-
-var scriptsPathSrc   = [devBase + '/js/_lib/**/*.js', devBase + '/js/_src/**/*.js', devBase + '/js/app.js'];
-var scriptsPathWatch = devBase + '/js/**/*.js';
+// Script Path
+var scriptsPathSrc   = [themeBase + 'js/_lib/**/*.js', themeBase + 'js/_src/**/*.js', themeBase + 'js/application-new.js'];
+var scriptsPathWatch = themeBase + 'js/**/*.js';
 var scriptsPathDest  = themeBase + '/js/';
 
-var svgPathWatch     = devBase + '/svg/*.svg';
+// Sprites Path
+var svgPathWatch     = themeBase + 'svg/*.svg';
 var svgDest          = themeBase + '/svg';
 
-var imgPathWatch     = devBase + '/img/*';
+// Image Path
+var imgPathWatch     = themeBase + 'img/*';
 var imgDest          = themeBase + '/img';
 
+// PHP Paths
 var phpPath          = themeBase + '/**/*.php';
-var htmlPath         = themeBase + '/**/*.html';
-var htmlViewsPath    = themeBase + '/views/*.html';
-
-/*===============================
-=            Options            =
-===============================*/
-// Server
-var server = {
-  host: 'localhost',
-  port: '8001'
-}
-
-// GZIP
-var gzip_options = {
-  threshold: '1kb',
-  gzipOptions: {
-    level: 9
-  }
-};
 
 /*=============================
 =            Tasks            =
@@ -74,67 +54,44 @@ var gzip_options = {
 // Copy bower files into our assets
 gulp.task('copy', function() {
   gulp.src([
-    /* add files from node_modules here if needed for JS */
+    /* add bower src files here if you include a bower.json */
   ])
   .pipe(gulp.dest(devBase + '/js/_lib/'));
 });
 
 // Compile, prefix, minify and move our SCSS files
-gulp.task("stylesheets", function() {
-  gulp.src(stylePathDev)
+gulp.task('stylesheets', function () {
+  var processors = [
+    require("postcss-import")(),
+    require("postcss-url")(),
+    require("postcss-cssnext")(),
+    require("cssnano")(),
+    require("postcss-browser-reporter")(),
+    require("postcss-reporter")()
+  ];
+  return gulp.src(stylePathSrc)
     .pipe(plumber())
-    .pipe(cssnext({
-        compress: true
-    }))
+    .pipe( sourcemaps.init() )
+    .pipe(postcss(processors))
+    .pipe( sourcemaps.write('.') )
     .pipe(gulp.dest(stylePathDest))
-    .pipe(gzip(gzip_options))
-    .pipe(gulp.dest(stylePathDest))
-    .pipe(livereload())
+    .pipe(browserSync.stream())
     .pipe(notify({ message: 'Styles task complete' }));
 });
 
 // Compile (in order), concatenate, minify, rename and move our JS files
 gulp.task('scripts', function() {
   return streamqueue({ objectMode: true },
-    gulp.src(devBase + '/js/_lib/**/*.js'),
-    gulp.src(devBase + '/js/_src/**/*.js'),
-    gulp.src(devBase + '/js/app.js')
+    gulp.src(themeBase + 'js/_lib/**/*.js'),
+    gulp.src(themeBase + 'js/_src/**/*.js'),
+    gulp.src(themeBase + 'js/app.js')
   )
   .pipe(plumber())
-  .pipe(jshint())
-  .pipe(jshint.reporter('default'))
   .pipe(concat('app.js', {newLine: ';'}))
   .pipe(uglify())
   .pipe(gulp.dest(scriptsPathDest))
-  .pipe(livereload())
+  .pipe(browserSync.stream())
   .pipe(notify({ message: 'Scripts task complete' }));
-});
-
-// Minify HTML
-gulp.task('minify', function() {
-  return gulp.src(htmlViewsPath)
-    .pipe(plumber())
-    .pipe(htmlmin({
-      collapseWhitespace: true,
-      removeComments: true
-    }))
-    .pipe(gulp.dest(themeBase))
-});
-
-// Launch Server
-gulp.task('webserver', function() {
-  gulp.src(themeBase)
-    .pipe(webserver({
-      host:             server.host,
-      port:             server.port,
-      livereload:       true,
-      directoryListing: false
-  }));
-});
-
-// Open Browser Tab
-gulp.task('openbrowser', function() {
-    opn( 'http://' + server.host + ':' + server.port );
 });
 
 /*========================================
@@ -170,19 +127,21 @@ gulp.task('svg-opt', function () {
   .pipe(notify({ message: 'SVG task complete' }));
 });
 
+// Browser Sync
+gulp.task('serve', ['stylesheets', 'scripts'], function() {
+    browserSync.init({
+      server: themeBase
+    });
+
+    gulp.watch(stylePathWatch, ['stylesheets']);
+    gulp.watch(scriptsPathWatch, ['scripts']);
+    gulp.watch(phpPath).on('change', browserSync.reload);
+});
+
 /*===================================
 =            Watch Tasks            =
 ===================================*/
-gulp.task('watch', function() {
-  livereload.listen();
-
-  gulp.watch(htmlViewsPath, ['minify']).on('change', function(file) {
-    livereload.changed(file.path);
-    util.log(util.colors.red('HTML file changed:' + ' (' + file.path + ')'));
-  });
-
-  gulp.watch(stylePathWatch, ['stylesheets']);
-  gulp.watch(scriptsPathWatch, ['scripts']);
+gulp.task('watch-images', function() {
   gulp.watch(svgPathWatch, ['svg-opt']);
   gulp.watch(imgPathWatch, ['img-opt']);
 });
@@ -190,6 +149,7 @@ gulp.task('watch', function() {
 /*==========================================
 =            Run the Gulp Tasks            =
 ==========================================*/
-gulp.task('default', ['copy', 'stylesheets', 'scripts', 'minify', 'webserver', 'openbrowser', 'watch']);
+gulp.task('default', ['stylesheets', 'scripts', 'watch-images', 'serve']);
+gulp.task('build', ['stylesheets', 'scripts']);
 gulp.task('images', ['img-opt']);
 gulp.task('svg', ['svg-opt']);

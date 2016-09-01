@@ -1,6 +1,9 @@
 node_modules/
 www/css/*.css
 www/css/*.css.gz
-www/css/*.js
+www/js/*.js
 
 .DS_Store
+
+settings.json
+settings.js
