@@ -19,34 +19,32 @@ sourcemaps  = require('gulp-sourcemaps'),
 postcss     = require('gulp-postcss'),
 browserSync = require('browser-sync').create();
 
-// Read our Settings Configuration
-var settings = JSON.parse(fs.readFileSync('./settings.json'));
-
 /*==================================
 =            Base Paths            =
 ==================================*/
-var themeBase        = './www';
+var themeBase = './assets';
+var themeDest = './www';
 
 // Style Path
-var stylePathSrc     = themeBase + 'css/base.css';
-var stylePathWatch   = themeBase + 'css/**/*.css';
-var stylePathDest    = themeBase + '/css/';
+var stylePathSrc     = themeBase + '/css/base.css';
+var stylePathWatch   = themeBase + '/css/**/*.css';
+var stylePathDest    = themeDest + '/css/';
 
 // Script Path
-var scriptsPathSrc   = [themeBase + 'js/_lib/**/*.js', themeBase + 'js/_src/**/*.js', themeBase + 'js/application-new.js'];
-var scriptsPathWatch = themeBase + 'js/**/*.js';
-var scriptsPathDest  = themeBase + '/js/';
+var scriptsPathSrc   = [themeBase + '/js/_lib/**/*.js', themeBase + '/js/_src/**/*.js', themeBase + '/js/application-new.js'];
+var scriptsPathWatch = themeBase + '/js/**/*.js';
+var scriptsPathDest  = themeDest + '/js/';
 
 // Sprites Path
-var svgPathWatch     = themeBase + 'svg/*.svg';
-var svgDest          = themeBase + '/svg';
+var svgPathWatch     = themeBase + '/svg/*.svg';
+var svgDest          = themeDest + '/svg';
 
 // Image Path
-var imgPathWatch     = themeBase + 'img/*';
-var imgDest          = themeBase + '/img';
+var imgPathWatch     = themeBase + '/img/*';
+var imgDest          = themeDest + '/img';
 
 // PHP Paths
-var phpPath          = themeBase + '/**/*.php';
+var htmlPath          = themeDest + '/**/*.html';
 
 /*=============================
 =            Tasks            =
