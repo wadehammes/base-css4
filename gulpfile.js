@@ -128,7 +128,7 @@ gulp.task('svg-opt', function () {
 // Browser Sync
 gulp.task('serve', ['stylesheets', 'scripts'], function() {
     browserSync.init({
-      server: themeBase
+      server: themeDest
     });
 
     gulp.watch(stylePathWatch, ['stylesheets']);
