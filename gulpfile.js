@@ -62,7 +62,11 @@ gulp.task('stylesheets', function () {
   var processors = [
     require("postcss-import")(),
     require("postcss-url")(),
-    require("postcss-cssnext")(),
+    require("postcss-cssnext")({
+      features: {
+        autoprefixer: false
+      }
+    }),
     require("cssnano")(),
     require("postcss-browser-reporter")(),
     require("postcss-reporter")()
@@ -133,7 +137,7 @@ gulp.task('serve', ['stylesheets', 'scripts'], function() {
 
     gulp.watch(stylePathWatch, ['stylesheets']);
     gulp.watch(scriptsPathWatch, ['scripts']);
-    gulp.watch(phpPath).on('change', browserSync.reload);
+    gulp.watch(htmlPath).on('change', browserSync.reload);
 });
 
 /*===================================
