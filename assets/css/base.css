@@ -8,9 +8,9 @@
 *
 */
 
-@import 'normalize.css';
+/*@import 'normalize.css';
 
-/* Basscss Modules */
+/* Basscss Modules
 @import 'basscss-base-reset';
 @import 'basscss-base-forms';
 @import 'basscss-base-tables';
@@ -32,7 +32,7 @@
 @import 'flex-object';
 @import 'basscss-borders';
 @import 'basscss-colors';
-@import 'basscss-background-colors';
+@import 'basscss-background-colors';*/
 
 
 /* Optional Modules (not included in Basscss by default) */
@@ -66,11 +66,11 @@
 
 
 /* Custom file import */
-/*@import './global/colors';*/
+@import '/global/import';
 
 
 /* Default custom properties */
-@import 'basscss-defaults';
+/*@import 'basscss-defaults';*/
 
 
 /* Custom media queries */
@@ -138,6 +138,8 @@
   --purple: #b10dc9;
   --maroon: #85144b;
 
+  --sky-blue: #0074d9;
+
 
   --darken-1: rgba(0,0,0,.0625);
   --darken-2: rgba(0,0,0,.125);
@@ -157,4 +159,3 @@
   --body-color: var(--gray);
   --body-background-color: var(--darken-1);
 }
-

@@ -64,6 +64,9 @@ gulp.task('stylesheets', function () {
     require("postcss-url")(),
     require("postcss-cssnext")({
       features: {
+        customProperties: {
+          preserve: true
+        },
         autoprefixer: false
       }
     }),
