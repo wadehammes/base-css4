@@ -1,1 +1,0 @@
-{"version":3,"sources":["global/buttons.css"],"names":[],"mappings":"AAAA,MACE,kBAA6C,CAC9C","file":"base.css","sourcesContent":["input {\n  background: color(var(--sky-blue) tint(10%));\n}\n"],"sourceRoot":"/source/"}

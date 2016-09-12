@@ -1,6 +1,7 @@
 node_modules/
 www/css/*.css
 www/css/*.css.gz
+www/css/*.map
 www/js/*.js
 
 .DS_Store
