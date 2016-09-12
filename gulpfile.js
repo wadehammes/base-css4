@@ -62,15 +62,15 @@ gulp.task('stylesheets', function () {
   var processors = [
     require("postcss-import")(),
     require("postcss-url")(),
-    require("postcss-cssnext")({
-      features: {
-        customProperties: {
-          preserve: true
-        },
-        autoprefixer: false
-      }
+    require("postcss-cssnext")(),
+    require("cssnano")({
+      discardComments: {
+        removeAll: true
+      },
+      filterPlugins: false,
+      discardEmpty: false,
+      autoprefixer: false
     }),
-    require("cssnano")(),
     require("postcss-browser-reporter")(),
     require("postcss-reporter")()
   ];
