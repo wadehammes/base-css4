@@ -10,7 +10,7 @@
 
 /*@import 'normalize.css';
 
-/* Basscss Modules
+/* Basscss Modules */
 @import 'basscss-base-reset';
 @import 'basscss-base-forms';
 @import 'basscss-base-tables';
@@ -32,7 +32,7 @@
 @import 'flex-object';
 @import 'basscss-borders';
 @import 'basscss-colors';
-@import 'basscss-background-colors';*/
+@import 'basscss-background-colors';
 
 
 /* Optional Modules (not included in Basscss by default) */
@@ -63,10 +63,6 @@
 @import 'basscss-highlight-dark';
 @import 'basscss-highlight';
 */
-
-
-/* Custom file import */
-@import '/global/import';
 
 
 /* Default custom properties */
