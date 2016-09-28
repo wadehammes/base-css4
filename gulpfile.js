@@ -17,13 +17,15 @@ plumber     = require('gulp-plumber'),
 shell       = require('gulp-shell'),
 sourcemaps  = require('gulp-sourcemaps'),
 postcss     = require('gulp-postcss'),
+panini      = require('panini'),
 browserSync = require('browser-sync').create();
 
 /*==================================
 =            Base Paths            =
 ==================================*/
-var themeBase = './assets';
-var themeDest = './www';
+var themeBase = './src/assets';
+var themePages = './src/pages/**/*.html';
+var themeDest = './dist';
 
 // Style Path
 var stylePathSrc     = themeBase + '/css/base.css';
@@ -71,7 +73,6 @@ gulp.task('stylesheets', function () {
       discardEmpty: false,
       autoprefixer: false
     }),
-    require("postcss-browser-reporter")(),
     require("postcss-reporter")()
   ];
   return gulp.src(stylePathSrc)
@@ -81,7 +82,7 @@ gulp.task('stylesheets', function () {
     .pipe( sourcemaps.write('.') )
     .pipe(gulp.dest(stylePathDest))
     .pipe(browserSync.stream())
-    .pipe(notify({ message: 'Styles task complete' }));
+    .pipe(notify({ message: 'Stylesheets task completed' }));
 });
 
 // Compile (in order), concatenate, minify, rename and move our JS files
@@ -96,7 +97,22 @@ gulp.task('scripts', function() {
   .pipe(uglify())
   .pipe(gulp.dest(scriptsPathDest))
   .pipe(browserSync.stream())
-  .pipe(notify({ message: 'Scripts task complete' }));
+  .pipe(notify({ message: 'Scripts task completed' }));
+});
+
+// Build html files
+gulp.task('html', function() {
+  gulp.src(themePages)
+    .pipe(panini({
+      root: './src/pages/',
+      layouts: './src/layouts/',
+      partials: './src/partials/',
+      helpers: './src/helpers/',
+      data: './src/data/'
+    }))
+    .pipe(gulp.dest(themeDest))
+    .pipe(browserSync.stream())
+    .pipe(notify({ message: 'HTML task completed' }));
 });
 
 /*========================================
@@ -133,13 +149,14 @@ gulp.task('svg-opt', function () {
 });
 
 // Browser Sync
-gulp.task('serve', ['stylesheets', 'scripts'], function() {
+gulp.task('serve', ['stylesheets', 'scripts', 'html'], function() {
     browserSync.init({
       server: themeDest
     });
 
     gulp.watch(stylePathWatch, ['stylesheets']);
     gulp.watch(scriptsPathWatch, ['scripts']);
+    gulp.watch(['./src/{layouts,partials,helpers,data,pages}/**/*'], ['html']);
     gulp.watch(htmlPath).on('change', browserSync.reload);
 });
 
@@ -154,7 +171,7 @@ gulp.task('watch-images', function() {
 /*==========================================
 =            Run the Gulp Tasks            =
 ==========================================*/
-gulp.task('default', ['stylesheets', 'scripts', 'watch-images', 'serve']);
-gulp.task('build', ['stylesheets', 'scripts']);
+gulp.task('default', ['stylesheets', 'scripts', 'html', 'watch-images', 'serve']);
+gulp.task('build', ['stylesheets', 'scripts', 'html']);
 gulp.task('images', ['img-opt']);
 gulp.task('svg', ['svg-opt']);
