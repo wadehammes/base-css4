@@ -64,7 +64,10 @@ gulp.task('stylesheets', function () {
   var processors = [
     require("postcss-import")(),
     require("postcss-url")(),
+    require('postcss-utilities')(),
+    require("precss")(),
     require("postcss-cssnext")(),
+    require("css-mqpacker")(),
     require("cssnano")({
       discardComments: {
         removeAll: true
