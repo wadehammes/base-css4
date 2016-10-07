@@ -159,7 +159,7 @@ gulp.task('serve', ['stylesheets', 'scripts', 'html'], function() {
 
     gulp.watch(stylePathWatch, ['stylesheets']);
     gulp.watch(scriptsPathWatch, ['scripts']);
-    gulp.watch(['./src/{layouts,partials,helpers,data,pages}/**/*'], ['html']);
+    gulp.watch(['./src/{layouts,partials,helpers,data}/**/*'], [panini.refresh]);
     gulp.watch(htmlPath).on('change', browserSync.reload);
 });
 
