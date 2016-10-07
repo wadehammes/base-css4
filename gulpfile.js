@@ -33,7 +33,7 @@ var stylePathWatch   = themeBase + '/css/**/*.css';
 var stylePathDest    = themeDest + '/css/';
 
 // Script Path
-var scriptsPathSrc   = [themeBase + '/js/_lib/**/*.js', themeBase + '/js/_src/**/*.js', themeBase + '/js/application-new.js'];
+var scriptsPathSrc   = [themeBase + '/js/_lib/**/*.js', themeBase + '/js/_src/**/*.js', themeBase + '/js/app.js'];
 var scriptsPathWatch = themeBase + '/js/**/*.js';
 var scriptsPathDest  = themeDest + '/js/';
 
