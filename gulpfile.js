@@ -18,6 +18,7 @@ shell       = require('gulp-shell'),
 sourcemaps  = require('gulp-sourcemaps'),
 postcss     = require('gulp-postcss'),
 panini      = require('panini'),
+svgstore    = require('gulp-svgstore'),
 browserSync = require('browser-sync').create();
 
 /*==================================
@@ -30,12 +31,12 @@ var themeDest = './dist';
 // Style Path
 var stylePathSrc     = themeBase + '/css/base.css';
 var stylePathWatch   = themeBase + '/css/**/*.css';
-var stylePathDest    = themeDest + '/css/';
+var stylePathDest    = themeDest + '/css';
 
 // Script Path
-var scriptsPathSrc   = [themeBase + '/js/_lib/**/*.js', themeBase + '/js/_src/**/*.js', themeBase + '/js/app.js'];
+var scriptsPathSrc   = [themeBase + '/js/_lib/**/*.js', themeBase + '/js/app.js'];
 var scriptsPathWatch = themeBase + '/js/**/*.js';
-var scriptsPathDest  = themeDest + '/js/';
+var scriptsPathDest  = themeDest + '/js';
 
 // Sprites Path
 var svgPathWatch     = themeBase + '/svg/*.svg';
@@ -92,7 +93,6 @@ gulp.task('stylesheets', function () {
 gulp.task('scripts', function() {
   return streamqueue({ objectMode: true },
     gulp.src(themeBase + '/js/_lib/**/*.js'),
-    gulp.src(themeBase + '/js/_src/**/*.js'),
     gulp.src(themeBase + '/js/app.js')
   )
   .pipe(plumber())
@@ -122,6 +122,31 @@ gulp.task('html-refresh', function() {
   panini.refresh()
 });
 
+// Create SVG sprite
+gulp.task('svgs', function() {
+  return gulp.src(svgPathWatch)
+    .pipe(plumber())
+    .pipe(svgmin({
+      plugins: [
+        {removeEmptyAttrs: false},
+        {removeEmptyNS: false},
+        {cleanupIDs: false},
+        {unknownAttrs: false},
+        {unknownContent: false},
+        {defaultAttrs: false},
+        {removeTitle: true},
+        {removeDesc: true},
+        {removeDoctype: true}
+      ],
+    }))
+    .pipe(svgstore({inlineSvg: true}))
+    .pipe(gulp.dest(themeDest))
+    .on('end', function() {
+      fs.renameSync(themeDest + '/svg.svg', themeDest + '/sprite.svg')
+    })
+    .pipe(notify({ message: 'SVG task complete' }));
+})
+
 /*========================================
 =            Standalone Tasks            =
 ========================================*/
@@ -135,26 +160,6 @@ gulp.task('img-opt', function () {
   .pipe(notify({ message: 'Images task complete' }));
 });
 
-// Optimize our SVGS
-gulp.task('svg-opt', function () {
-  return gulp.src(svgPathWatch)
-  .pipe(svgmin({
-    plugins: [
-    {removeEmptyAttrs: false},
-    {removeEmptyNS: false},
-    {cleanupIDs: false},
-    {unknownAttrs: false},
-    {unknownContent: false},
-    {defaultAttrs: false},
-    {removeTitle: true},
-    {removeDesc: true},
-    {removeDoctype: true}
-    ],
-    }))
-  .pipe(gulp.dest(svgDest))
-  .pipe(notify({ message: 'SVG task complete' }));
-});
-
 // Browser Sync
 gulp.task('serve', ['stylesheets', 'scripts', 'html'], function() {
     browserSync.init({
@@ -164,7 +169,6 @@ gulp.task('serve', ['stylesheets', 'scripts', 'html'], function() {
     gulp.watch(stylePathWatch, ['stylesheets']);
     gulp.watch(scriptsPathWatch, ['scripts']);
     gulp.watch(['./src/{layouts,partials,helpers,data}/**/*'], ['html-refresh', 'html']);
-    gulp.watch(htmlPath).on('change', browserSync.reload);
 });
 
 /*===================================
@@ -178,7 +182,6 @@ gulp.task('watch-images', function() {
 /*==========================================
 =            Run the Gulp Tasks            =
 ==========================================*/
-gulp.task('default', ['stylesheets', 'scripts', 'html', 'watch-images', 'serve']);
+gulp.task('default', ['stylesheets', 'scripts', 'html', 'svgs', 'watch-images', 'serve']);
 gulp.task('build', ['stylesheets', 'scripts', 'html']);
 gulp.task('images', ['img-opt']);
-gulp.task('svg', ['svg-opt']);
