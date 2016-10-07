@@ -104,7 +104,7 @@ gulp.task('scripts', function() {
 });
 
 // Build html files
-gulp.task('html', function() {
+gulp.task('html', ['html-refresh'], function() {
   gulp.src(themePages)
     .pipe(panini({
       root: './src/pages/',
@@ -116,6 +116,10 @@ gulp.task('html', function() {
     .pipe(gulp.dest(themeDest))
     .pipe(browserSync.stream())
     .pipe(notify({ message: 'HTML task completed' }));
+});
+
+gulp.task('html-refresh', function() {
+  panini.refresh()
 });
 
 /*========================================
@@ -159,7 +163,7 @@ gulp.task('serve', ['stylesheets', 'scripts', 'html'], function() {
 
     gulp.watch(stylePathWatch, ['stylesheets']);
     gulp.watch(scriptsPathWatch, ['scripts']);
-    gulp.watch(['./src/{layouts,partials,helpers,data}/**/*'], [panini.refresh]);
+    gulp.watch(['./src/{layouts,partials,helpers,data}/**/*'], ['html-refresh', 'html']);
     gulp.watch(htmlPath).on('change', browserSync.reload);
 });
 
