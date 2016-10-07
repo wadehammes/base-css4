@@ -91,9 +91,9 @@ gulp.task('stylesheets', function () {
 // Compile (in order), concatenate, minify, rename and move our JS files
 gulp.task('scripts', function() {
   return streamqueue({ objectMode: true },
-    gulp.src(themeBase + 'js/_lib/**/*.js'),
-    gulp.src(themeBase + 'js/_src/**/*.js'),
-    gulp.src(themeBase + 'js/app.js')
+    gulp.src(themeBase + '/js/_lib/**/*.js'),
+    gulp.src(themeBase + '/js/_src/**/*.js'),
+    gulp.src(themeBase + '/js/app.js')
   )
   .pipe(plumber())
   .pipe(concat('app.js', {newLine: ';'}))
