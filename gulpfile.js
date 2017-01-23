@@ -21,6 +21,10 @@ panini      = require('panini'),
 svgstore    = require('gulp-svgstore'),
 browserSync = require('browser-sync').create();
 
+var config = {
+  production: !!utility.env.production
+}
+
 /*==================================
 =            Base Paths            =
 ==================================*/
@@ -85,8 +89,8 @@ gulp.task('stylesheets', function () {
     .pipe(postcss(processors))
     .pipe( sourcemaps.write('.') )
     .pipe(gulp.dest(stylePathDest))
-    .pipe(browserSync.stream())
-    .pipe(notify({ message: 'Stylesheets task completed' }));
+    .pipe(config.production ? utility.noop() : browserSync.stream())
+    .pipe(config.production ? utility.noop() : notify({ message: 'Styles task complete' }));
 });
 
 // Compile (in order), concatenate, minify, rename and move our JS files
@@ -99,8 +103,8 @@ gulp.task('scripts', function() {
   .pipe(concat('app.js', {newLine: ';'}))
   .pipe(uglify())
   .pipe(gulp.dest(scriptsPathDest))
-  .pipe(browserSync.stream())
-  .pipe(notify({ message: 'Scripts task completed' }));
+  .pipe(config.production ? utility.noop() : browserSync.stream())
+  .pipe(config.production ? utility.noop() : notify({ message: 'Scripts task complete' }));
 });
 
 // Build html files
@@ -114,8 +118,8 @@ gulp.task('html', ['html-refresh'], function() {
       data: './src/data/'
     }))
     .pipe(gulp.dest(themeDest))
-    .pipe(browserSync.stream())
-    .pipe(notify({ message: 'HTML task completed' }));
+    .pipe(config.production ? utility.noop() : browserSync.stream())
+    .pipe(config.production ? utility.noop() : notify({ message: 'HTML task complete' }));
 });
 
 gulp.task('html-refresh', function() {
@@ -144,7 +148,7 @@ gulp.task('svgs', function() {
     .on('end', function() {
       fs.renameSync(themeDest + '/svg.svg', themeDest + '/sprite.svg')
     })
-    .pipe(notify({ message: 'SVG task complete' }));
+    .pipe(config.production ? utility.noop() : notify({ message: 'SVG task complete' }));
 })
 
 /*========================================
@@ -168,7 +172,7 @@ gulp.task('serve', ['stylesheets', 'scripts', 'html'], function() {
 
     gulp.watch(stylePathWatch, ['stylesheets']);
     gulp.watch(scriptsPathWatch, ['scripts']);
-    gulp.watch(['./src/{layouts,partials,helpers,data}/**/*'], ['html-refresh', 'html']);
+    gulp.watch(['./src/{layouts,partials,helpers,data,pages}/**/*'], ['html-refresh', 'html']);
 });
 
 /*===================================
