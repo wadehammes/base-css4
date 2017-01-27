@@ -100,9 +100,11 @@ gulp.task('scripts', function() {
     gulp.src(themeBase + '/js/app.js')
   )
   .pipe(plumber())
+  .pipe( sourcemaps.init() )
+  .pipe(babel())
   .pipe(concat('app.js', {newLine: ';'}))
   .pipe(uglify())
-  .pipe(gulp.dest(scriptsPathDest))
+  .pipe( sourcemaps.write('.') )
   .pipe(config.production ? utility.noop() : browserSync.stream())
   .pipe(config.production ? utility.noop() : notify({ message: 'Scripts task complete' }));
 });
