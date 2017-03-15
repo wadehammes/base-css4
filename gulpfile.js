@@ -5,6 +5,7 @@ require('es6-promise').polyfill();
 
 var gulp    = require('gulp'),
 fs          = require('fs'),
+babel       = require('gulp-babel'),
 concat      = require('gulp-concat'),
 uglify      = require('gulp-uglify'),
 svgmin      = require('gulp-svgmin'),
@@ -85,11 +86,11 @@ gulp.task('stylesheets', function () {
   ];
   return gulp.src(stylePathSrc)
     .pipe(plumber())
-    .pipe( sourcemaps.init() )
+    .pipe(sourcemaps.init())
     .pipe(postcss(processors))
-    .pipe( sourcemaps.write('.') )
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(stylePathDest))
-    .pipe(config.production ? utility.noop() : browserSync.stream())
+    .pipe(config.production ? utility.noop() : browserSync.stream({match: '**/*.css'}))
     .pipe(config.production ? utility.noop() : notify({ message: 'Styles task complete' }));
 });
 
@@ -100,11 +101,12 @@ gulp.task('scripts', function() {
     gulp.src(themeBase + '/js/app.js')
   )
   .pipe(plumber())
-  .pipe( sourcemaps.init() )
+  .pipe(sourcemaps.init())
   .pipe(babel())
   .pipe(concat('app.js', {newLine: ';'}))
   .pipe(uglify())
-  .pipe( sourcemaps.write('.') )
+  .pipe(sourcemaps.write('.'))
+  .pipe(gulp.dest(scriptsPathDest))
   .pipe(config.production ? utility.noop() : browserSync.stream())
   .pipe(config.production ? utility.noop() : notify({ message: 'Scripts task complete' }));
 });
