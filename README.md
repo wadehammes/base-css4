@@ -21,8 +21,4 @@ Your project should compile successfully.
 Using this to build
 ===
 
-All theme dev is done in `src/` and uses ZURBs Panini for templating. See https://github.com/zurb/panini for more. CSS framework is BASSCSS, see http://basscss.com for documentation, and for more info on using CSS4 now, visit the CSS Next website at http://cssnext.io.
-
-To include new CSS files outside of the BASSCSS defaults, comment out modules, or add optional modules, please see `src/assets/css/base.css</code>`.
-
-You can also use .php files if you need, just change index to .php and then create your files that way (use <code>include</code> where you can to keep things DRY).
+All theme dev is done in `src/` and uses ZURBs Panini for templating. See https://github.com/zurb/panini for more. CSS is compiled with PostCSS and uses the new PostCSS Preset Env which gives you access to in proposal future CSS.
