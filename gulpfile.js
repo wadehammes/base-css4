@@ -71,8 +71,7 @@ gulp.task('stylesheets', function () {
     require("postcss-import")(),
     require("postcss-url")(),
     require('postcss-utilities')(),
-    require("precss")(),
-    require("postcss-cssnext")(),
+    require('postcss-preset-env')(),
     require("css-mqpacker")(),
     require("cssnano")({
       discardComments: {
